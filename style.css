@@ -1,0 +1,33 @@
+.hidden {
+  display: none;
+}
+
+#identification {
+  display: grid;
+  border: 1px solid blueviolet;
+  gap: 10px;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(7, 2rem);
+}
+
+#motivation {
+  display: contents;
+}
+
+#formation, #visite {
+  width: 20px;
+}
+
+#navigation {
+  display: grid;
+  grid-template-columns: repeat(2,0.5fr);
+  background-color: #4a1365;
+}
+
+.link {
+  font-style: none;
+  color: beige;
+}
+.link-active {
+  background-color: #9260ad;
+}

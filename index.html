@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav id="navigation">
+    <a href="#enter" id="enter-link" class="link link-active">Entree</a>
+    <a href="#exit" id="exit-link" class="link">Sortie</a>
+  </nav>
+  <div id="enter">
+    <form id="identification" class="formulaire" method="POST">
+    <p>Inditifie vous</p>
+    <input type="text" placeholder="Nom" name="lastname">
+    <input type="text" placeholder="Prenom" name="firstname">
+    <input type="email" placeholder="Email" name="email">
+   <div id="motivation"> 
+  <p>Motif de visit:</p>
+    <div>
+      <input type="radio" id="formation" name="motif" value="formation">
+     <label for="formation">Formation</label>
+    </div>
+    <div>
+     <input type="radio" id="visite" name="motif" value="visit">
+     <label for="visite">Visite</label>
+    </div>
+  </div>
+    <select name="list" id="list">
+    </select>
+    <button id="idetification_valid">Valider</button>
+    </form>
+    <a href="#connection" id="connection_link">Vous avez deja un compte?</a>
+  </div>
+
+  <div id="connection" class="hidden">
+    <div></div><!--QR code add-->
+    <input type="email" name="email" id="email_con" placeholder="Email">
+      <button id="connection_button">Connecte</button>
+  </div>
+
+  <div id="exit" class="hidden">
+    <div></div> <!--QR code add-->
+    <input type="email" placeholder="Email">
+    <button id="exit_button">Sortie</button>
+  </div>
+  <script src="main.js"></script>
+  <script src="ind.js"></script>
+</body>
+</html>
