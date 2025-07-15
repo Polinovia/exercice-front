@@ -117,7 +117,7 @@ label {
 }
 
 /* 🔗 Посилання */
-#connection_link {
+.connection_link {
   display: block;
   text-align: center;
   margin-top: 1rem;
@@ -126,13 +126,23 @@ label {
   transition: color var(--transition);
 }
 
-#connection_link:hover {
+.connection_link:hover {
   color: var(--accent);
 }
 
 /* 🕶 Приховані блоки */
 .hidden {
   display: none;
+}
+
+#visitor-info {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#qrcode {
+  margin: 10px auto;
+  display: inline-block;
 }
 
 /* 🌌 Частинки */

@@ -8,6 +8,8 @@ const $enterPage = document.querySelector("#enter");
 const $exitPage = document.querySelector("#exit");
 const $exitButton = document.querySelector("#exit_button");
 const $connectionButton = document.querySelector("#connection_button");
+const $againButton = document.querySelector("#visit_again");
+const $identButton = document.querySelector("#idetification_valid");
 const $token = localStorage.getItem("authToken");
 const $emailExit = document.querySelector("#exit-email");
 const $emailConnection = document.querySelector("#email_connection");
@@ -41,7 +43,6 @@ function GetDateTime () {
 async function GetVisitePostIdFromEmail(email) {
   const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${encodeURIComponent(email)}`);
   const dataUser = await res.json();
-  console.log("Réponse visiteur :", dataUser);
     const resp = await fetch(` https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/visites-par-user?user=${dataUser[0].id}`);
   const dataVisit = await resp.json();
  
@@ -62,10 +63,10 @@ $navigation.addEventListener("click", (e) => {
 
 $linkConnection.addEventListener("click", (e) => {
   e.preventDefault();
-  $formConnection.classList.remove("hidden");
+  $formConnection.classList.remove("hidden"); 
 });
 
-$formPersonell.addEventListener("submit", (e) => {
+$formPersonell.addEventListener("submit", async (e) => {
   e.preventDefault(); // Empêche le rechargement de la page
 
   const formData = new FormData($formPersonell);
@@ -75,6 +76,33 @@ $formPersonell.addEventListener("submit", (e) => {
   });
 
   console.log("Données à envoyer :", formUser);
+ const response = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/formation/${formUser.list}`);
+    const dataFormation = await response.json();
+      const { title_formation, location} = dataFormation.acf;
+  const nom = formUser.lastname;
+  const prenom = formUser.firstname;
+  const email = formUser.email;
+  const motif = title_formation;
+  const localisation = location;
+
+const qrData = `${nom} ${prenom} - ${email} (${motif})`;
+
+ const infoDiv = document.getElementById('visitor-info');
+  const textEl = document.getElementById('visitor-text');
+  textEl.textContent = `Visiteur: ${prenom} ${nom}, Email: ${email}, Motif: ${motif}, Local: ${localisation}`;
+  infoDiv.classList.remove('hidden');
+
+  const qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = ""; // Réinitialiser
+  qrContainer.classList.remove('hidden');
+
+ new QRCode(qrContainer, {
+  text: qrData,
+  width: 128,
+  height: 128,
+  correctLevel: QRCode.CorrectLevel.L, // Plus de données, moins de redondance
+  version: 10 // ou plus si nécessaire, max = 40
+});
 
 fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur", {
   method: "POST",
@@ -103,15 +131,13 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur", 
 .then(data => {
   alert("Formulaire envoyé !");
   console.log("Réponse serveur :", data);
-  VisteUser(data.id)
-  $id_user=data.id
+  $VisiteUser(data.id)
 })
 .catch(error => {
   console.error("Erreur :", error.message);
 });
 
-function VisteUser (id) {
-GetDateTime ();
+function $VisiteUser (id) {
 const nowdateheure = GetDateTime();
 fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
   method: "POST",
@@ -178,23 +204,45 @@ $exitButton.addEventListener('click', async(e)=> {
 
 
   $connectionButton.addEventListener('click', async(e)=> {
+    const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${$emailConnection.value}`);
+    const data = await res.json();
+    console.log(data);
+    const resp = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur/${data[0].id}`);
+    $id_user = data[0].id;
+    const userData = await resp.json();
+    console.log(userData);
+     const { firstname, lastname, email: userEmail } = userData.acf;
+
+    // Remplir le formulaire #identification
+    $formPersonell.querySelector('[name="firstname"]').value = firstname || '';
+    $formPersonell.querySelector('[name="lastname"]').value = lastname || '';
+    $formPersonell.querySelector('[name="email"]').value = userEmail || '';
+    $againButton.classList.remove("hidden");
+    $identButton.classList.add("hidden");
+    $linkConnection.classList.add("hidden");
+    $formConnection.classList.add("hidden"); 
+    
+  });
+
+ $againButton.addEventListener('click', e => {
+     const formData = new FormData($formPersonell);
+  const formUser = {};
+  formData.forEach((value, name) => {
+    formUser[name] = value;
+  });
+
   const nowdateheure = GetDateTime();
- visiteId = GetVisitePostIdFromEmail($emailConnection);
- const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${encodeURIComponent(email)}`);
-  const data = await res.json();
-  console.log("Réponse visiteur :", data);
-    // Step 2: Update visite with current hour_partir
-  fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
+fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     "Authorization": "Bearer " + $token
   },
   body: JSON.stringify({
-    title: `visite-${id}`,
+    title: `visite-${$id_user}`,
     status: "publish",
     fields: {
-      visites_visiteur: id,
+      visites_visiteur: $id_user,
 			date_enter: nowdateheure.date,
 		  hour_enter: nowdateheure.hour,
 			motif_visite: [
@@ -203,24 +251,8 @@ $exitButton.addEventListener('click', async(e)=> {
     }
   })
 })
-.then(response => {
-  if (!response.ok) {
-    return response.text().then(text => {
-      throw new Error(`Erreur HTTP ${response.status} : ${text}`);
-    });
-  }
-  return response.json();
-})
-.then(data => {
-  alert("Formulaire envoyé !");
-  console.log("Réponse serveur :", data);
-  VisteUser(data.id)
-  $id_user=data.id
-})
-.catch(error => {
-  console.error("Erreur :", error.message);
-});
- } );
+$formPersonell.reset();
+ })
 
 
 // Récupérer les éléments
