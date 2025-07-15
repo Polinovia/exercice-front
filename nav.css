@@ -1,0 +1,50 @@
+#navigation {
+  background: rgba(36, 27, 54, 0.65);
+  padding: 0.6rem 2rem;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin: 2rem auto;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(169, 116, 255, 0.25);
+  box-shadow: 0 0 12px rgba(169, 116, 255, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+#navigation:hover {
+  box-shadow: 0 0 16px rgba(169, 116, 255, 0.4);
+}
+
+/* 🌠 Navigation Links */
+.link {
+  color: var(--accent-light);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  position: relative;
+  padding: 0.3rem 0.6rem;
+  transition: color 0.3s ease;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.link:hover::after,
+.link-active::after {
+  width: 100%;
+}
+
+.link:hover {
+  color: var(--accent);
+}

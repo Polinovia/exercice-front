@@ -1,33 +1,147 @@
+:root {
+  --bg-color: #1b1426;
+  --panel-color: #241b36;
+  --accent: #a974ff;
+  --accent-light: #c7a5ff;
+  --text: #d6c8f9;
+  --text-muted: #b79ce7;
+  --input-bg: #2b2140;
+  --border: #3c2f56;
+  --radius: 12px;
+  --transition: 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+/* 💠 Контейнери */
+#enter, #connection, #exit {
+  background: var(--panel-color);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 0 20px rgba(169, 116, 255, 0.2);
+  max-width: 600px;
+  margin: 2rem auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* 🧾 Форми */
+input[type="text"],
+input[type="email"],
+select {
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.8rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 8px var(--accent-light);
+}
+
+button {
+  background-color: var(--accent);
+  color: #1b1426;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+button:hover {
+  background-color: var(--accent-light);
+  box-shadow: 0 0 12px var(--accent-light);
+}
+
+/* 🎯 Радіо */
+#motivation p {
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+#motivation div {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+input[type="radio"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border-radius: 50%;
+}
+
+
+label {
+  margin-left: 0.5rem;
+  color: var(--text-muted);
+}
+
+/* 🔗 Посилання */
+#connection_link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--accent-light);
+  text-decoration: underline;
+  transition: color var(--transition);
+}
+
+#connection_link:hover {
+  color: var(--accent);
+}
+
+/* 🕶 Приховані блоки */
 .hidden {
   display: none;
 }
 
-#identification {
-  display: grid;
-  border: 1px solid blueviolet;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(7, 2rem);
-}
-
-#motivation {
-  display: contents;
-}
-
-#formation, #visite {
-  width: 20px;
-}
-
-#navigation {
-  display: grid;
-  grid-template-columns: repeat(2,0.5fr);
-  background-color: #4a1365;
-}
-
-.link {
-  font-style: none;
-  color: beige;
-}
-.link-active {
-  background-color: #9260ad;
+/* 🌌 Частинки */
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: var(--bg-color);
 }
