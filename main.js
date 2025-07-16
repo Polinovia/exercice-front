@@ -74,6 +74,16 @@ window.addEventListener("DOMContentLoaded", () => {
     const cpt = selectedMotif.value === "formation" ? "formation" : "personne";
     chargerListeCPT(cpt);
   }
+  if (document.getElementById("reader-connection")) {
+    html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText) {
+      // Ton callback, même logique que dans le clic
+      console.log("QR Code scanné auto : ", decodedText);
+      // Traitement etc.
+      html5QrcodeScanner.clear();
+      // Cache le scanner si tu veux
+      document.getElementById("reader-connection").classList.add("hidden");
+    });
+  }
 });
 
 // 📷 Scanner image côté connexion
@@ -108,6 +118,8 @@ document.getElementById("upload-qr-exit").addEventListener("change", function (e
     .catch(err => {
       console.error("Erreur scan image (sortie) :", err);
     });
+
+
 });
 
 
@@ -368,7 +380,6 @@ console.log(updateRes);
     document.getElementById("reader-connection");
 
     html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
-      document.getElementById("reader-connection");
       html5QrcodeScanner.clear();
 
       const email = decodedText;
