@@ -217,9 +217,9 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
     return response.text().then(text => {
       throw new Error(`Erreur HTTP ${response.status} : ${text}`);
     });
-  }
-    window.print();
+  }  
     formUser.reset();
+    window.print();
   return response.json();
 })}
 });
