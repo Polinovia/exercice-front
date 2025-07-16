@@ -325,14 +325,11 @@ console.log(updateRes);
         alert("Erreur lors de la mise à jour de la visite.");
       }
     } else {
-    // 📷 Démarre le scanner
-    document.getElementById("reader-exit").classList.remove("hidden");
 
     html5QrcodeScanner = startQrScanner("reader-exit", async function(decodedText, decodedResult) {
-      document.getElementById("reader-exit").classList.add("hidden");
-      html5QrcodeScanner.clear();
-
-      const email = decodedText;
+  
+      const email = decodedText; 
+        html5QrcodeScanner.clear();
       const now = GetDateTime();
       const visiteId = await GetVisitePostIdFromEmail(email);
 
@@ -386,14 +383,12 @@ console.log(updateRes);
     $linkConnection.classList.add("hidden");
     $formConnection.classList.add("hidden");
   } else {
-    // 📷 Démarre scanner
-    document.getElementById("reader-connection");
 
     html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
-      html5QrcodeScanner.clear();
+    
 
       const email = decodedText;
-
+  html5QrcodeScanner.clear();
       // 🎯 Récupère l'utilisateur via email
       const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${email}`);
       const data = await res.json();
