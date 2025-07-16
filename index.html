@@ -42,7 +42,7 @@
 
   <div id="connection" class="hidden">
    <div id="reader-connection" width="600px">
-      <div id="result"></div>
+      <input type="file" id="upload-qr-connection" accept="image/*">
       <div id="reader" width="600px"></div>
    </div>
     <input type="email" name="email" id="email_connection" placeholder="Email">
@@ -51,6 +51,7 @@
 
   <div id="exit" class="hidden">
     <div id="reader-exit" width="600px"></div> 
+     <input type="file" id="upload-qr-exit" accept="image/*">
     <input type="email" name="email" placeholder="Email" id="exit-email">
     <button id="exit_button">Sortie</button>
   </div>  
@@ -59,6 +60,7 @@
   <script src="html5-qrcode.min.js"></script>
   <script type="module" src="main.js"></script>
   <script src="ind.js"></script>
+  <script src="camera.js"></script>
   <div id="particles-js"></div>
 
     <div id="visitor-info" class="hidden is-print">

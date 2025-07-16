@@ -145,10 +145,13 @@ label {
   display: inline-block;
 }
 
-  #reader-connection,#reader-exit {
-      max-height: 500px !important;
-      max-width: 500Px !important;
-    }
+#reader-connection,
+#reader-exit {
+  width: 100%;
+  max-width: 320px; /* Or any desired max width */
+  height: auto;
+  margin: 0 auto;
+}
 
 
 /* 🌌 Частинки */

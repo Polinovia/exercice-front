@@ -76,6 +76,41 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// 📷 Scanner image côté connexion
+document.getElementById("upload-qr-connection").addEventListener("change", function (e) {
+  if (e.target.files.length === 0) return;
+
+  const html5QrCode = new Html5Qrcode("reader");
+  html5QrCode
+    .scanFile(e.target.files[0], true)
+    .then(decodedText => {
+      console.log("QR (connexion) : ", decodedText);
+      alert(`QR Code détecté : ${decodedText}`);
+      document.getElementById("email_connection").value = decodedText;
+    })
+    .catch(err => {
+      console.error("Erreur scan image (connexion) :", err);
+    });
+});
+
+// 📷 Scanner image côté sortie
+document.getElementById("upload-qr-exit").addEventListener("change", function (e) {
+  if (e.target.files.length === 0) return;
+
+  const html5QrCode = new Html5Qrcode("reader-exit");
+  html5QrCode
+    .scanFile(e.target.files[0], true)
+    .then(decodedText => {
+      console.log("QR (sortie) : ", decodedText);
+      alert(`QR Code détecté : ${decodedText}`);
+      document.getElementById("exit-email").value = decodedText;
+    })
+    .catch(err => {
+      console.error("Erreur scan image (sortie) :", err);
+    });
+});
+
+
 //submit formulaire
 $formPersonell.addEventListener("submit", async (e) => {
   e.preventDefault(); // Empêche le rechargement de la page
