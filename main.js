@@ -219,9 +219,9 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
     });
   }
     window.print();
+    formUser.reset();
   return response.json();
 })}
-formUser.reset();
 });
 
 //changer les pages Entree et Sortie
