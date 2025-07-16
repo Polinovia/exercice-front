@@ -14,7 +14,7 @@ const $token = localStorage.getItem("authToken");
 const $emailExit = document.querySelector("#exit-email");
 const $emailConnection = document.querySelector("#email_connection");
 let visiteId = null;
-
+  let html5QrcodeScanner = null;
 let $id_user = null;
 
 function SwitchPage(page1, page2, link1, link2) {
@@ -53,19 +53,30 @@ async function GetVisitePostIdFromEmail(email) {
   return dataVisit[0].id; // ⚠️ seulement si c'est bien l'ID WordPress du post 'visites'
 }
 
+// Fonction appelée quand le code QR est scanné avec succès
+function startQrScanner(elementId, onSuccessCallback) {
+  const scanner = new Html5QrcodeScanner(
+    elementId,
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    false
+  );
+  scanner.render(onSuccessCallback, onScanFailure);
+  return scanner;
+}
 
-$navigation.addEventListener("click", (e) => {
-  e.preventDefault();
-  if ($exitPage.classList.contains("hidden")) SwitchPage($exitPage, $enterPage, $enterLink, $exitLink);
-  else SwitchPage($enterPage, $exitPage, $exitLink, $enterLink);
-  $formConnection.classList.add("hidden");
+function onScanFailure(error) {
+  console.warn(`Erreur scan QR: ${error}`);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const selectedMotif = document.querySelector('input[name="motif"]:checked');
+  if (selectedMotif) {
+    const cpt = selectedMotif.value === "formation" ? "formation" : "personne";
+    chargerListeCPT(cpt);
+  }
 });
 
-$linkConnection.addEventListener("click", (e) => {
-  e.preventDefault();
-  $formConnection.classList.remove("hidden"); 
-});
-
+//submit formulaire
 $formPersonell.addEventListener("submit", async (e) => {
   e.preventDefault(); // Empêche le rechargement de la page
 
@@ -76,8 +87,9 @@ $formPersonell.addEventListener("submit", async (e) => {
   });
 
   console.log("Données à envoyer :", formUser);
- const response = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/formation/${formUser.list}`);
-    const dataFormation = await response.json();
+  if (formUser.motif == "formation") {
+ const response1 = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/formation/${formUser.list}`);
+    const dataFormation = await response1.json();
       const { title_formation, location} = dataFormation.acf;
   const nom = formUser.lastname;
   const prenom = formUser.firstname;
@@ -85,11 +97,16 @@ $formPersonell.addEventListener("submit", async (e) => {
   const motif = title_formation;
   const localisation = location;
 
-const qrData = `${nom} ${prenom} - ${email} (${motif})`;
+   const $qrData = `${email}`;
 
  const infoDiv = document.getElementById('visitor-info');
   const textEl = document.getElementById('visitor-text');
-  textEl.textContent = `Visiteur: ${prenom} ${nom}, Email: ${email}, Motif: ${motif}, Local: ${localisation}`;
+  textEl.innerHTML = `
+  <p>Visiteur: ${prenom} ${nom}</p>
+  <p>Email: ${email}</p> 
+  <p>Motif: ${motif}</p> 
+  <p>Local: ${localisation}</p>
+  `;
   infoDiv.classList.remove('hidden');
 
   const qrContainer = document.getElementById('qrcode');
@@ -97,12 +114,49 @@ const qrData = `${nom} ${prenom} - ${email} (${motif})`;
   qrContainer.classList.remove('hidden');
 
  new QRCode(qrContainer, {
-  text: qrData,
+  text: $qrData,
   width: 128,
   height: 128,
   correctLevel: QRCode.CorrectLevel.L, // Plus de données, moins de redondance
   version: 10 // ou plus si nécessaire, max = 40
 });
+  }
+  if (formUser.motif == "visit") {
+    const response2 = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/personne/${formUser.list}`);
+    const dataPersonne = await response2.json();
+      const { telephone, local} = dataPersonne.acf;
+  const nom = formUser.lastname;
+  const prenom = formUser.firstname;
+  const email = formUser.email;
+  const telephone_personne = telephone;
+  const localisation = local;
+
+  const $qrData = `${email}`;
+
+ const infoDiv = document.getElementById('visitor-info');
+  const textEl = document.getElementById('visitor-text');
+  textEl.innerHTML = `
+  <p>Visiteur: ${prenom} ${nom}</p> 
+  <p>Email: ${email}</p> 
+  <p>Motif: ${telephone_personne}</p>
+  <p>Local: ${localisation}</p>
+  `;
+  infoDiv.classList.remove('hidden');
+
+
+  const qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = ""; // Réinitialiser
+  qrContainer.classList.remove('hidden');
+
+ new QRCode(qrContainer, {
+  text: $qrData,
+  width: 128,
+  height: 128,
+  correctLevel: QRCode.CorrectLevel.L, // Plus de données, moins de redondance
+  version: 10 // ou plus si nécessaire, max = 40
+});
+  }
+
 
 fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur", {
   method: "POST",
@@ -164,66 +218,148 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
       throw new Error(`Erreur HTTP ${response.status} : ${text}`);
     });
   }
+    window.print();
   return response.json();
 })}
-})
+});
 
-$exitButton.addEventListener('click', async(e)=> {
-  const nowdateheure = GetDateTime();
-   visiteId = await GetVisitePostIdFromEmail($emailExit.value);
-   
-    // Step 2: Update visite with current hour_partir
-    console.log("id: "+ visiteId)
-    if(visiteId) {
-    const updateRes = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites/${visiteId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${$token}`,
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        title: `visite-${visiteId}`,
-        fields: {
-          hour_partir: nowdateheure.hour
-        }
-      })
-    });
-    console.log(await updateRes.json());
+//changer les pages Entree et Sortie
+$navigation.addEventListener("click", (e) => {
+  e.preventDefault();
+  if ($exitPage.classList.contains("hidden")) SwitchPage($exitPage, $enterPage, $enterLink, $exitLink);
+  else SwitchPage($enterPage, $exitPage, $exitLink, $enterLink);
+  $formConnection.classList.add("hidden");
+});
 
-    if (updateRes.ok) {
-      alert("Heure de sortie enregistrée avec succès !");
+//Afficher notre form connection
+$linkConnection.addEventListener("click", (e) => {
+  e.preventDefault();
+  $formConnection.classList.remove("hidden"); 
+});
+
+//Exit button
+$exitButton.addEventListener('click', async (e) => {
+  e.preventDefault();
+  const emailInput = $emailExit.value.trim();
+  
+  
+  if (emailInput) {
+    // Si email est fourni manuellement
+    const now = GetDateTime();
+    const visiteId = await GetVisitePostIdFromEmail(emailInput);
+    
+      const updateRes = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites/${visiteId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${$token}`
+        },
+        body: JSON.stringify({
+          title: `visite-${visiteId}`,
+          fields: {
+            hour_partir: now.hour
+          }
+        })
+      });
+console.log(updateRes);
+      if (updateRes.ok) {
+        alert("Sortie enregistrée avec succès !");
+      } else {
+        alert("Erreur lors de la mise à jour de la visite.");
+      }
     } else {
-      alert("Erreur lors de la mise à jour.");
-    }
-  }
-  else {
-    alert('Qui êtes vous ?')
-  }
-  } )
+    // 📷 Démarre le scanner
+    document.getElementById("reader-exit").classList.remove("hidden");
 
+    html5QrcodeScanner = startQrScanner("reader-exit", async function(decodedText, decodedResult) {
+      document.getElementById("reader-exit").classList.add("hidden");
+      html5QrcodeScanner.clear();
 
+      const email = decodedText;
+      const now = GetDateTime();
+      const visiteId = await GetVisitePostIdFromEmail(email);
+
+      if (visiteId) {
+        const updateRes = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites/${visiteId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${$token}`
+          },
+          body: JSON.stringify({
+            title: `visite-${visiteId}`,
+            fields: {
+              hour_partir: now.hour
+            }
+          })
+        });
+
+        if (updateRes.ok) {
+          alert("Sortie enregistrée avec succès !");
+        } else {
+          alert("Erreur lors de la mise à jour de la sortie.");
+        }
+      } else {
+        alert("Visiteur non trouvé.");
+      }
+    });
+  }
+});
+
+//Connection button
   $connectionButton.addEventListener('click', async(e)=> {
-    const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${$emailConnection.value}`);
+  e.preventDefault();
+
+  const emailVal = $emailConnection.value.trim();
+  if (emailVal) {
+    // Connexion manuelle par email
+    const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${emailVal}`);
     const data = await res.json();
-    console.log(data);
     const resp = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur/${data[0].id}`);
     $id_user = data[0].id;
     const userData = await resp.json();
-    console.log(userData);
-     const { firstname, lastname, email: userEmail } = userData.acf;
+    const { firstname, lastname, email: userEmail } = userData.acf;
 
-    // Remplir le formulaire #identification
     $formPersonell.querySelector('[name="firstname"]').value = firstname || '';
     $formPersonell.querySelector('[name="lastname"]').value = lastname || '';
     $formPersonell.querySelector('[name="email"]').value = userEmail || '';
+
     $againButton.classList.remove("hidden");
     $identButton.classList.add("hidden");
     $linkConnection.classList.add("hidden");
-    $formConnection.classList.add("hidden"); 
-    
-  });
+    $formConnection.classList.add("hidden");
+  } else {
+    // 📷 Démarre scanner
+    document.getElementById("reader-connection").classList.remove("hidden");
 
+    html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
+      document.getElementById("reader-connection").classList.add("hidden");
+      html5QrcodeScanner.clear();
+
+      const email = decodedText;
+
+      // 🎯 Récupère l'utilisateur via email
+      const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${email}`);
+      const data = await res.json();
+      const userDataRes = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur/${data[0].id}`);
+      const userData = await userDataRes.json();
+      const { firstname, lastname, email: userEmail } = userData.acf;
+
+      $id_user = data[0].id;
+
+      $formPersonell.querySelector('[name="firstname"]').value = firstname || '';
+      $formPersonell.querySelector('[name="lastname"]').value = lastname || '';
+      $formPersonell.querySelector('[name="email"]').value = userEmail || '';
+
+      $againButton.classList.remove("hidden");
+      $identButton.classList.add("hidden");
+      $linkConnection.classList.add("hidden");
+      $formConnection.classList.add("hidden");
+    });
+  }
+});
+
+//Create un visite avec user deja cree
  $againButton.addEventListener('click', e => {
      const formData = new FormData($formPersonell);
   const formUser = {};
@@ -291,11 +427,3 @@ document.querySelectorAll('input[name="motif"]').forEach((radio) => {
   });
 });
 
-// Au chargement, si un motif est déjà coché, on charge la liste correspondante
-window.addEventListener("DOMContentLoaded", () => {
-  const selectedMotif = document.querySelector('input[name="motif"]:checked');
-  if (selectedMotif) {
-    const cpt = selectedMotif.value === "formation" ? "formation" : "personne";
-    chargerListeCPT(cpt);
-  }
-});

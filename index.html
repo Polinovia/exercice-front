@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="nav.css">
 </head>
-<body>
-  <nav id="navigation">
+<body class="is-print">
+  <nav id="navigation" class="is-print">
     <a href="#enter" id="enter-link" class="link link-active">Entree</a>
     <a href="#exit" id="exit-link" class="link">Sortie</a>
   </nav>
@@ -34,27 +34,37 @@
     <button id="idetification_valid">Valider</button>
     </form>
     <button id="visit_again" class="hidden">Accepte</button>
-     <div id="visitor-info" class="hidden">
-        <p id="visitor-text"></p>
-        <div id="qrcode"></div>
-      </div>
+     
     <a href="#connection"  class="connection_link" id="connection_link">Vous avez deja un compte?</a>
   </div>
 
+  <!-- QRCODE SCAN -->
+
   <div id="connection" class="hidden">
-    <div></div><!--QR code add-->
+   <div id="reader-connection" width="600px">
+      <div id="result"></div>
+      <div id="reader" width="600px"></div>
+   </div>
     <input type="email" name="email" id="email_connection" placeholder="Email">
       <button id="connection_button">Connecte</button>
   </div>
 
   <div id="exit" class="hidden">
-    <div></div> <!--QR code add-->
-    <input type="email" placeholder="Email" id="exit-email">
+    <div id="reader-exit" width="600px"></div> 
+    <input type="email" name="email" placeholder="Email" id="exit-email">
     <button id="exit_button">Sortie</button>
-  </div>
-  <script src="main.js"></script>
+  </div>  
+
+
+  <script src="html5-qrcode.min.js"></script>
+  <script type="module" src="main.js"></script>
   <script src="ind.js"></script>
   <div id="particles-js"></div>
+
+    <div id="visitor-info" class="hidden is-print">
+         <div id="qrcode"></div>
+          <p id="visitor-text"></p>
+      </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script src="backgr.js"></script>

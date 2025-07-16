@@ -145,6 +145,12 @@ label {
   display: inline-block;
 }
 
+  #reader-connection,#reader-exit {
+      max-height: 500px !important;
+      max-width: 500Px !important;
+    }
+
+
 /* 🌌 Частинки */
 #particles-js {
   position: fixed;
@@ -154,4 +160,71 @@ label {
   height: 100%;
   z-index: -1;
   background: var(--bg-color);
+}
+
+#reader {
+      max-height: 500px !important;
+      max-width: 500Px !important;
+  }
+
+
+@media print {
+  #particles-js {
+    display: none;
+  }
+
+  body {
+    background-color: white;
+  }
+
+  /* Masquer tout sauf ce qui est dans body.is-print */
+  body * {
+    display: none !important;
+  }
+
+  body.is-print {
+     display: flex !important;
+    color: black !important;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+  }
+
+#visitor-info.is-print {
+  display: flex !important;
+  border: 1px solid black;
+  width: 16cm;
+  height: 5cm;
+  padding: 10px;
+  color: black !important;
+  font-family: Arial, sans-serif;
+}
+
+#visitor-info.is-print > div {
+  /* Chaque enfant prend sa place */
+  flex: 0 0 auto;
+}
+
+#qrcode {
+  /* Fixer la taille du QR code */
+  width: 120px;
+  height: 120px;
+}
+
+#visitor-text {
+  margin-left: 20px;
+  flex-grow: 1;
+  font-size: 14px;
+}
+
+
+  /* Assurer que tous les enfants soient visibles */
+  #visitor-info.is-print * {
+    display: block !important;
+    margin-bottom: 0.3em;
+  }
+
+  /* Masquer canvas si tu utilises QR code en canvas et que tu veux cacher */
+  #visitor-info.is-print canvas {
+    display: none !important;
+  }
 }
