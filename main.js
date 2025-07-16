@@ -190,7 +190,6 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visiteur", 
 .catch(error => {
   console.error("Erreur :", error.message);
 });
-
 function $VisiteUser (id) {
 const nowdateheure = GetDateTime();
 fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
@@ -218,8 +217,8 @@ fetch("https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/wp/v2/visites", {
       throw new Error(`Erreur HTTP ${response.status} : ${text}`);
     });
   }  
-    formUser.reset();
     window.print();
+    $formPersonell.reset()
   return response.json();
 })}
 });
