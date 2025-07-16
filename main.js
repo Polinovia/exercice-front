@@ -365,10 +365,10 @@ console.log(updateRes);
     $formConnection.classList.add("hidden");
   } else {
     // 📷 Démarre scanner
-    document.getElementById("reader-connection").classList.remove("hidden");
+    document.getElementById("reader-connection");
 
     html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
-      document.getElementById("reader-connection").classList.add("hidden");
+      document.getElementById("reader-connection");
       html5QrcodeScanner.clear();
 
       const email = decodedText;
