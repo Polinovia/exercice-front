@@ -84,6 +84,16 @@ window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("reader-connection").classList.add("hidden");
     });
   }
+  if (document.getElementById("reader-exit")) {
+    html5QrcodeScanner = startQrScanner("reader-exit", async function(decodedText) {
+      // Ton callback, même logique que dans le clic
+      console.log("QR Code scanné auto : ", decodedText);
+      // Traitement etc.
+      html5QrcodeScanner.clear();
+      // Cache le scanner si tu veux
+      document.getElementById("reader-exit").classList.add("hidden");
+    });
+  }
 });
 
 // 📷 Scanner image côté connexion
