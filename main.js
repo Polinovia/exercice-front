@@ -96,29 +96,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 📷 Scanner image côté connexion
-document.getElementById("upload-qr-connection").addEventListener("change", function (e) {
-  if (e.target.files.length === 0) return;
-
-  const html5QrCode = new Html5Qrcode("reader");
-  html5QrCode
-    .scanFile(e.target.files[0], true)
-    .then(decodedText => {
-      console.log("QR (connexion) : ", decodedText);
-      alert(`QR Code détecté : ${decodedText}`);
-      document.getElementById("email_connection").value = decodedText;
-    })
-    .catch(err => {
-      console.error("Erreur scan image (connexion) :", err);
-    });
-});
 
 // 📷 Scanner image côté sortie
 document.getElementById("upload-qr-exit").addEventListener("change", function (e) {
   if (e.target.files.length === 0) return;
 
-  const html5QrCode = new Html5Qrcode("reader-exit");
-  html5QrCode
+  const html5QrCode2 = new Html5Qrcode("reader-exit");
+  html5QrCode2
     .scanFile(e.target.files[0], true)
     .then(decodedText => {
       console.log("QR (sortie) : ", decodedText);
@@ -326,10 +310,10 @@ console.log(updateRes);
       }
     } else {
 
-    html5QrcodeScanner = startQrScanner("reader-exit", async function(decodedText, decodedResult) {
-  
+    html5QrcodeScanner2 = startQrScanner("reader-exit", async function(decodedText, decodedResult) {
+   html5QrcodeScanner2.clear();
       const email = decodedText; 
-        html5QrcodeScanner.clear();
+       
       const now = GetDateTime();
       const visiteId = await GetVisitePostIdFromEmail(email);
 
@@ -384,11 +368,11 @@ console.log(updateRes);
     $formConnection.classList.add("hidden");
   } else {
 
-    html5QrcodeScanner = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
-    
+    html5QrcodeScanner1 = startQrScanner("reader-connection", async function(decodedText, decodedResult) {
+      html5QrcodeScanner1.clear();
 
       const email = decodedText;
-  html5QrcodeScanner.clear();
+
       // 🎯 Récupère l'utilisateur via email
       const res = await fetch(`https://ingrwf12.cepegra-frontend.xyz/wp_polina/wp-json/custom/v1/person-par-email?email=${email}`);
       const data = await res.json();
