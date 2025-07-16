@@ -192,7 +192,7 @@ label {
 #visitor-info.is-print {
   display: flex !important;
   border: 1px solid black;
-  width: 16cm;
+  width: 8cm;
   height: 5cm;
   padding: 10px;
   color: black !important;
