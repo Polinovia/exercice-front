@@ -107,11 +107,11 @@ $formPersonell.addEventListener("submit", async (e) => {
   <p>Motif: ${motif}</p> 
   <p>Local: ${localisation}</p>
   `;
-  infoDiv.classList.remove('hidden');
+ // infoDiv.classList.remove('hidden');
 
   const qrContainer = document.getElementById('qrcode');
   qrContainer.innerHTML = ""; // Réinitialiser
-  qrContainer.classList.remove('hidden');
+ // qrContainer.classList.remove('hidden');
 
  new QRCode(qrContainer, {
   text: $qrData,
@@ -138,15 +138,15 @@ $formPersonell.addEventListener("submit", async (e) => {
   textEl.innerHTML = `
   <p>Visiteur: ${prenom} ${nom}</p> 
   <p>Email: ${email}</p> 
-  <p>Motif: ${telephone_personne}</p>
+  <p>Telephone: ${telephone_personne}</p>
   <p>Local: ${localisation}</p>
   `;
-  infoDiv.classList.remove('hidden');
+  //infoDiv.classList.remove('hidden');
 
 
   const qrContainer = document.getElementById('qrcode');
   qrContainer.innerHTML = ""; // Réinitialiser
-  qrContainer.classList.remove('hidden');
+ // qrContainer.classList.remove('hidden');
 
  new QRCode(qrContainer, {
   text: $qrData,
